@@ -1,9 +1,10 @@
+import SetYear from "./SetYear"
+
 const Authors = (props) => {
   if (!props.show) {
     return null
   }
   const authors = props.authors ? props.authors : []
-  console.log(authors)
 
   return (
     <div>
@@ -24,6 +25,7 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
+      <SetYear authors={authors} />
     </div>
   )
 }
