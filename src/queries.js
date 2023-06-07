@@ -27,8 +27,10 @@ query All_Authors{
 export const ALL_BOOKS = gql`
 query books {
   allBooks {
-    author,
-    title,
+    author {
+      name
+    }
+    title
     published
   }
 }
@@ -41,3 +43,10 @@ mutation EditAuthor($name: String!, $setBornTo: Int!) {
   }
 }
 `;
+
+export const LOG_IN = gql`
+mutation Login($username: String!, $password: String!) {
+  login(username: $username, password: $password) {
+    value
+  }
+}`;
