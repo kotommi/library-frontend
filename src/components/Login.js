@@ -4,7 +4,7 @@ import { LOG_IN } from "../queries";
 import Notify from "./Notify";
 
 const Login = ({ show, setToken, setPage }) => {
-    
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState(null);
@@ -23,6 +23,7 @@ const Login = ({ show, setToken, setPage }) => {
                 }
             })
             const token = data.login.value;
+            localStorage.setItem("library-user-token", token);
             setToken(token);
             setPage("authors")
         } catch (error) {

@@ -3,7 +3,7 @@ import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import Login from './components/Login'
-import { useQuery } from "@apollo/client"
+import { useApolloClient, useQuery } from "@apollo/client"
 
 import { ALL_BOOKS, ALL_AUTHORS } from './queries'
 
@@ -12,15 +12,16 @@ import { ALL_BOOKS, ALL_AUTHORS } from './queries'
 const App = () => {
   const [token, setToken] = useState(null);
   const [page, setPage] = useState('authors');
+  const client = useApolloClient();
   const authors = useQuery(ALL_AUTHORS);
   const books = useQuery(ALL_BOOKS);
   const allauthors = authors.loading ? [] : authors.data.allAuthors;
   const allbooks = books.loading ? [] : books.data.allBooks;
 
-  console.log(token);
-
   const handleLogout = () => {
-
+    setToken(null);
+    localStorage.clear();
+    client.resetStore();
   }
 
   return (
