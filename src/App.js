@@ -5,7 +5,8 @@ import NewBook from './components/NewBook'
 import Login from './components/Login'
 import { useApolloClient, useQuery } from "@apollo/client"
 
-import { ALL_BOOKS, ALL_AUTHORS } from './queries'
+import { ALL_BOOKS, ALL_AUTHORS, GET_USER } from './queries'
+import Recommend from './components/Recommend'
 
 
 
@@ -15,13 +16,16 @@ const App = () => {
   const client = useApolloClient();
   const authors = useQuery(ALL_AUTHORS);
   const books = useQuery(ALL_BOOKS);
+  const meQuery = useQuery(GET_USER);
   const allauthors = authors.loading ? [] : authors.data.allAuthors;
   const allbooks = books.loading ? [] : books.data.allBooks;
+  const user = meQuery.loading ? null : meQuery.data.me;
 
   const handleLogout = () => {
     setToken(null);
     localStorage.clear();
     client.resetStore();
+    setPage("login");
   }
 
   return (
@@ -30,6 +34,7 @@ const App = () => {
         <button onClick={() => setPage('authors')}>authors</button>
         <button onClick={() => setPage('books')}>books</button>
         {token ? <button onClick={() => setPage('add')}>add book</button> : null}
+        {token ? <button onClick={() => setPage("recommend")}>recommendations</button> : null}
         {!token ? <button onClick={() => setPage('login')}>login</button> : <button onClick={() => handleLogout} >logout</button>}
       </div>
 
@@ -37,8 +42,11 @@ const App = () => {
 
       <Books show={page === 'books'} books={allbooks} />
 
-      {token ? <NewBook show={page === 'add'} />
-        : <Login show={page === 'login'} setToken={setToken} setPage={setPage} />}
+      <NewBook show={page === 'add'} />
+
+      <Recommend show={page === "recommend"} user={user} />
+
+      <Login show={page === 'login'} setToken={setToken} setPage={setPage} />
 
 
     </div>

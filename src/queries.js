@@ -9,8 +9,11 @@ mutation addBook($title: String!, $author: String!, $published: Int, $genres:[St
         published: $published,
         genres: $genres
     ) {
-        title,
-        author
+        title
+        published
+        author {
+          name
+        }
     }
 }
 `
@@ -32,6 +35,7 @@ query books {
     }
     title
     published
+    genres
   }
 }
 `
@@ -50,3 +54,27 @@ mutation Login($username: String!, $password: String!) {
     value
   }
 }`;
+
+export const GET_USER = gql`
+query Query {
+  me {
+    favoriteGenre
+    id
+    username
+  }
+}
+`
+
+export const FILTER_BOOKS = gql`
+query Query($author: String, $genre: String) {
+  allBooks(author: $author, genre: $genre) {
+    author {
+      name
+    }
+    genres
+    id
+    published
+    title
+  }
+}
+`
