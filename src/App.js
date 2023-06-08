@@ -3,9 +3,9 @@ import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import Login from './components/Login'
-import { useApolloClient, useQuery } from "@apollo/client"
+import { useApolloClient, useQuery, useSubscription } from "@apollo/client"
 
-import { ALL_BOOKS, ALL_AUTHORS, GET_USER } from './queries'
+import { ALL_BOOKS, ALL_AUTHORS, GET_USER, BOOK_ADDED, FILTER_BOOKS } from './queries'
 import Recommend from './components/Recommend'
 
 
@@ -20,6 +20,24 @@ const App = () => {
   const allauthors = authors.loading ? [] : authors.data.allAuthors;
   const allbooks = books.loading ? [] : books.data.allBooks;
   const user = meQuery.loading ? null : meQuery.data.me;
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      const addedBook = data?.data?.bookAdded
+      window.alert(`New book ${addedBook.title} was added`)
+      // allBooks is the query name in the apollo stuff, has to be used for FILTER_BOOKS too
+      client.cache.updateQuery({ query: FILTER_BOOKS, variables: { genre: null } }, ({ allBooks }) => {
+        return {
+          allBooks: allBooks.concat(addedBook)
+        }
+      })
+      client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+        return {
+          allBooks: allBooks.concat(addedBook)
+        }
+      })
+    }
+  });
 
   const handleLogout = () => {
     setToken(null);
